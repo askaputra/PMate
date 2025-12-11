@@ -8,7 +8,7 @@ spec:
   ports:
     - port: 80
       targetPort: 80
-  type: LoadBalancer # Akses browser ke sini
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -26,6 +26,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: your-dockerhub-username/preorder-frontend:latest
+          image: preorder-frontend:latest # Sesuaikan nama image lokal Anda
           ports:
             - containerPort: 80
+            

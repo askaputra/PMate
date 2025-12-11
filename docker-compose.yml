@@ -5,11 +5,12 @@ services:
     build: ./backend
     ports:
       - "3000:3000"
-    # Tidak perlu environment DB lagi
+    container_name: pmate-backend
 
   frontend:
     build: ./frontend
     ports:
-      - "8080:80" # Akses di browser via localhost:8080
+      - "8080:80"
     depends_on:
       - backend
+    container_name: pmate-frontend

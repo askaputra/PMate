@@ -1,9 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: LoadBalancer # Agar bisa diakses dari luar (browser) juga
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
 spec:
-  replicas: 2
+  replicas: 1 # Cukup 1 untuk lokal memory (karena kalau 2, datanya tidak sinkron antar pod)
   selector:
     matchLabels:
       app: backend
@@ -14,7 +26,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: preorder-backend:latest
+          image: preorder-backend:latest # Pastikan build image ini dulu
           ports:
             - containerPort: 3000
-          # ENV Variable dihapus semua karena tidak pakai DB
+          # Tidak perlu ENV database
