@@ -29,20 +29,21 @@ function AuthPage({ onLoginSuccess }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('BUYER');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     const endpoint = isRegistering ? '/register' : '/login';
-    const payload = isRegistering ? { username, password, role } : { username, password };
+    
+    const payload = { username, password };
 
     api.post(endpoint, payload)
        .then(res => {
            if(isRegistering) {
                alert("Registrasi Berhasil! Silakan Login.");
-               setIsRegistering(false); setPassword('');
+               setIsRegistering(false); 
+               setPassword('');
            } else {
                onLoginSuccess(res.data);
            }
@@ -54,7 +55,7 @@ function AuthPage({ onLoginSuccess }) {
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '80px', fontFamily: 'Segoe UI, sans-serif' }}>
       <div style={{ width: '350px', border: '1px solid #e1e1e1', padding: '40px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', background: 'white' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '25px', color: '#333' }}>
-            {isRegistering ? 'Daftar Akun' : 'Login Area'}
+            {isRegistering ? 'Daftar Buyer Baru' : 'Login Sistem'}
         </h2>
         
         {error && <div style={{background: '#ffebee', color: '#c62828', padding: '12px', borderRadius: '6px', marginBottom: '20px', fontSize: '14px', textAlign: 'center'}}>{error}</div>}
@@ -66,24 +67,13 @@ function AuthPage({ onLoginSuccess }) {
                        value={username} onChange={e => setUsername(e.target.value)} />
             </div>
             
-            <div style={{marginBottom: '15px'}}>
+            <div style={{marginBottom: '20px'}}>
                 <label style={{display:'block', marginBottom:'5px', fontWeight:'500'}}>Password</label>
                 <input type="password" required style={{width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc', boxSizing: 'border-box'}} 
                        value={password} onChange={e => setPassword(e.target.value)} />
             </div>
-
-            {isRegistering && (
-                <div style={{marginBottom: '20px'}}>
-                    <label style={{display:'block', marginBottom:'5px', fontWeight:'500'}}>Peran:</label>
-                    <select style={{width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc'}} value={role} onChange={e => setRole(e.target.value)}>
-                        <option value="BUYER">Pembeli (Buyer)</option>
-                        <option value="ADMIN">Penjual (Admin)</option>
-                    </select>
-                </div>
-            )}
-
-            <button type="submit" style={{width: '100%', padding: '12px', background: isRegistering ? '#28a745' : '#007bff', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '16px', fontWeight: '600', marginTop: '10px'}}>
-                {isRegistering ? 'Daftar Sekarang' : 'Masuk Sistem'}
+            <button type="submit" style={{width: '100%', padding: '12px', background: isRegistering ? '#28a745' : '#007bff', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '16px', fontWeight: '600', marginTop: '5px'}}>
+                {isRegistering ? 'Daftar Sekarang' : 'Masuk'}
             </button>
         </form>
 
@@ -98,6 +88,7 @@ function AuthPage({ onLoginSuccess }) {
   );
 }
 
+// DASHBOARD ADMIN
 function AdminDashboard({ user }) {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -186,6 +177,7 @@ function AdminDashboard({ user }) {
   );
 }
 
+//DASHBOARD BUYER
 function BuyerDashboard({ user }) {
   const [products, setProducts] = useState([]);
   const [myOrders, setMyOrders] = useState([]);
