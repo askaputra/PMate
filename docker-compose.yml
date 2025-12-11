@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    # Tidak perlu environment DB lagi
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80" # Akses di browser via localhost:8080
+    depends_on:
+      - backend
