@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react' // <--- PERHATIKAN INI DITAMBAHKAN
 import axios from 'axios'
 
 function App() {
   const [stats, setStats] = useState(null)
 
   useEffect(() => {
-    // Memanggil API backend (pastikan backend jalan di port 3000)
+    // Memanggil API backend
     axios.get('http://localhost:3000/api/stats')
       .then(res => setStats(res.data))
       .catch(err => console.error("Gagal konek backend:", err))
