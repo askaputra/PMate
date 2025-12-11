@@ -40,8 +40,8 @@ app.post('/api/register', (req, res) => {
   const newUser = {
     id: userIdCounter++,
     username,
-    password, // Catatan: Di aplikasi nyata, password WAJIB di-hash (bcrypt)
-    role: role.toUpperCase() // Paksa jadi uppercase (ADMIN/BUYER)
+    password, 
+    role: role.toUpperCase() 
   };
 
   users.push(newUser);

@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: preorder-frontend:latest # Sesuaikan nama image lokal Anda
+          image: preorder-frontend:latest 
           ports:
             - containerPort: 80
             
