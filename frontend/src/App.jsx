@@ -25,7 +25,6 @@ function App() {
   );
 }
 
-//Login & Register
 function AuthPage({ onLoginSuccess }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [username, setUsername] = useState('');
@@ -55,7 +54,7 @@ function AuthPage({ onLoginSuccess }) {
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '80px', fontFamily: 'Segoe UI, sans-serif' }}>
       <div style={{ width: '350px', border: '1px solid #e1e1e1', padding: '40px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', background: 'white' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '25px', color: '#333' }}>
-            {isRegistering ? '📝 Daftar Akun' : '🔐 Login Area'}
+            {isRegistering ? 'Daftar Akun' : 'Login Area'}
         </h2>
         
         {error && <div style={{background: '#ffebee', color: '#c62828', padding: '12px', borderRadius: '6px', marginBottom: '20px', fontSize: '14px', textAlign: 'center'}}>{error}</div>}
@@ -99,7 +98,6 @@ function AuthPage({ onLoginSuccess }) {
   );
 }
 
-//DASHBOARD ADMIN
 function AdminDashboard({ user }) {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -137,7 +135,7 @@ function AdminDashboard({ user }) {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '40px' }}>
         <div>
-          <h3>📦 Input Produk Baru</h3>
+          <h3>Input Produk Baru</h3>
           <form onSubmit={handleAddProduct} style={{ background: '#f8f9fa', padding: '20px', borderRadius: '10px', marginBottom: '20px', border: '1px solid #e9ecef' }}>
             <div style={{marginBottom: '10px'}}>
                 <label style={{fontSize: '12px', fontWeight: 'bold', color: '#555'}}>Nama Barang</label>
@@ -151,7 +149,7 @@ function AdminDashboard({ user }) {
                 <label style={{fontSize: '12px', fontWeight: 'bold', color: '#555'}}>ETA (Tanggal Sampai)</label>
                 <input style={{width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', boxSizing:'border-box'}} required value={newProduct.eta} onChange={e => setNewProduct({...newProduct, eta: e.target.value})} placeholder="Contoh: 20 Januari 2026" />
             </div>
-            <button type="submit" style={{width: '100%', padding: '10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}>+ Tambah Produk</button>
+            <button type="submit" style={{width: '100%', padding: '10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}>Tambah Produk</button>
           </form>
           
           <h4>List Produk Aktif:</h4>
@@ -166,7 +164,7 @@ function AdminDashboard({ user }) {
         </div>
         
         <div>
-          <h3>📝 Monitoring Pesanan</h3>
+          <h3>Monitoring Pesanan</h3>
           <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse' }}>
             <thead><tr style={{ background: '#f1f3f5', textAlign: 'left', borderBottom: '2px solid #dee2e6' }}><th style={{padding:'10px'}}>Buyer</th><th style={{padding:'10px'}}>Barang</th><th style={{padding:'10px'}}>Status</th><th style={{padding:'10px'}}>Aksi</th></tr></thead>
             <tbody>
@@ -188,10 +186,11 @@ function AdminDashboard({ user }) {
   );
 }
 
-//DASHBOARD BUYER
 function BuyerDashboard({ user }) {
   const [products, setProducts] = useState([]);
   const [myOrders, setMyOrders] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [orderQty, setOrderQty] = useState(1);
 
   const refreshData = () => {
     const headers = { 'x-user-role': user.role, 'x-user-name': user.username };
@@ -200,27 +199,49 @@ function BuyerDashboard({ user }) {
   };
   useEffect(() => { refreshData(); }, []);
 
-  const handleOrder = (productId, quantity) => {
-    api.post('/orders', { product_id: productId, quantity: quantity, customer_name: user.username })
+  const openOrderModal = (product) => {
+    setSelectedProduct(product);
+    setOrderQty(1);
+  };
+
+  const confirmOrder = () => {
+    if (!selectedProduct) return;
+    
+    api.post('/orders', { product_id: selectedProduct.id, quantity: orderQty, customer_name: user.username })
         .then(() => { 
-            alert("✅ Pesanan berhasil dibuat! Cek invoice di bawah."); 
+            alert("Pesanan berhasil dibuat! Cek invoice di bawah."); 
             refreshData(); 
+            setSelectedProduct(null);
         })
         .catch(err => alert("Gagal memesan: " + err.message));
   };
 
   return (
     <div>
-        <h3 style={{borderLeft: '5px solid #007bff', paddingLeft: '10px', marginBottom: '20px'}}>🛒 Katalog Preorder</h3>
+        <h3 style={{borderLeft: '5px solid #007bff', paddingLeft: '10px', marginBottom: '20px'}}>Katalog Preorder</h3>
         
-        {/* Grid Produk */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px', marginBottom: '50px' }}>
             {products.map(p => (
-                <ProductCard key={p.id} product={p} onOrder={handleOrder} />
+                <div key={p.id} style={{ border: '1px solid #eaeaea', borderRadius: '12px', padding: '20px', background: 'white', transition: 'transform 0.2s', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                        <h4 style={{margin: '0 0 10px 0', fontSize: '18px', color: '#333'}}>{p.name}</h4>
+                        <p style={{color: '#666', fontSize: '13px', margin: '0 0 15px 0', background: '#f8f9fa', padding: '5px', borderRadius: '4px', display: 'inline-block'}}>
+                            ETA: {p.eta}
+                        </p>
+                        <h3 style={{margin: '0 0 20px 0', color: '#007bff'}}>Rp {p.price.toLocaleString()}</h3>
+                    </div>
+                    
+                    <button 
+                        onClick={() => openOrderModal(p)} 
+                        style={{width: '100%', background: '#007bff', color: 'white', border: 'none', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', transition: 'background 0.2s'}}
+                    >
+                        Pesan Sekarang
+                    </button>
+                </div>
             ))}
         </div>
 
-        <h3 style={{borderLeft: '5px solid #28a745', paddingLeft: '10px', marginBottom: '20px'}}>🧾 Invoice Saya</h3>
+        <h3 style={{borderLeft: '5px solid #28a745', paddingLeft: '10px', marginBottom: '20px'}}>Invoice Saya</h3>
         {myOrders.length === 0 ? <div style={{padding: '20px', background: '#f9f9f9', textAlign: 'center', color: '#888'}}>Belum ada pesanan aktif.</div> : (
             <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px'}}>
                 {myOrders.map(o => (
@@ -233,56 +254,44 @@ function BuyerDashboard({ user }) {
                             <span>Total: <strong>Rp {o.total_price.toLocaleString()}</strong></span>
                         </div>
                         <div style={{fontSize: '12px', color: '#007bff', marginTop: '10px', background: '#e7f1ff', padding: '5px', borderRadius: '4px', display: 'inline-block'}}>
-                            📦 Estimasi Sampai: {o.product_eta}
+                            Estimasi Sampai: {o.product_eta}
                         </div>
                     </div>
                 ))}
             </div>
         )}
+
+        {selectedProduct && (
+            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000}}>
+                <div style={{background: 'white', padding: '30px', borderRadius: '12px', width: '400px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)'}}>
+                    <h3 style={{marginTop: 0, color: '#007bff'}}>Konfirmasi Pesanan</h3>
+                    <p>Anda akan memesan <strong>{selectedProduct.name}</strong></p>
+                    <p style={{fontSize: '14px', color: '#555'}}>Harga Satuan: Rp {selectedProduct.price.toLocaleString()}</p>
+                    
+                    <div style={{margin: '20px 0'}}>
+                        <label style={{display:'block', marginBottom:'5px', fontWeight:'bold'}}>Masukkan Jumlah:</label>
+                        <input 
+                            type="number" 
+                            min="1" 
+                            value={orderQty} 
+                            onChange={(e) => setOrderQty(Math.max(1, parseInt(e.target.value) || 1))}
+                            style={{width: '100%', padding: '10px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc', boxSizing:'border-box'}}
+                        />
+                    </div>
+
+                    <div style={{background: '#f8f9fa', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'right'}}>
+                        Total Tagihan: <strong style={{fontSize: '18px', color: '#333'}}>Rp {(selectedProduct.price * orderQty).toLocaleString()}</strong>
+                    </div>
+
+                    <div style={{display: 'flex', gap: '10px', justifyContent: 'flex-end'}}>
+                        <button onClick={() => setSelectedProduct(null)} style={{padding: '10px 20px', background: '#ccc', border: 'none', borderRadius: '6px', cursor: 'pointer'}}>Batal</button>
+                        <button onClick={confirmOrder} style={{padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}>Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+        )}
     </div>
   );
-}
-
-function ProductCard({ product, onOrder }) {
-    const [qty, setQty] = useState(1);
-
-    return (
-        <div style={{ border: '1px solid #eaeaea', borderRadius: '12px', padding: '20px', background: 'white', transition: 'transform 0.2s', boxShadow: '0 4px 6px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-                <h4 style={{margin: '0 0 10px 0', fontSize: '18px', color: '#333'}}>{product.name}</h4>
-                <p style={{color: '#666', fontSize: '13px', margin: '0 0 15px 0', background: '#f8f9fa', padding: '5px', borderRadius: '4px', display: 'inline-block'}}>
-                    🕒 ETA: {product.eta}
-                </p>
-                <h3 style={{margin: '0 0 20px 0', color: '#007bff'}}>Rp {product.price.toLocaleString()}</h3>
-            </div>
-            
-            <div style={{background: '#f1f3f5', padding: '15px', borderRadius: '8px'}}>
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
-                    <label style={{fontSize: '12px', fontWeight: '600'}}>Mau pesan berapa?</label>
-                    <input 
-                        type="number" 
-                        min="1" 
-                        value={qty} 
-                        onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
-                        style={{width: '60px', padding: '5px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px', fontWeight: 'bold'}} 
-                    />
-                </div>
-                
-                <div style={{textAlign: 'right', fontSize: '12px', color: '#666', marginBottom: '10px'}}>
-                    Estimasi: Rp {(product.price * qty).toLocaleString()}
-                </div>
-
-                <button 
-                    onClick={() => onOrder(product.id, qty)} 
-                    style={{width: '100%', background: '#007bff', color: 'white', border: 'none', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', transition: 'background 0.2s'}}
-                    onMouseOver={(e) => e.target.style.background = '#0056b3'}
-                    onMouseOut={(e) => e.target.style.background = '#007bff'}
-                >
-                    Pesan Sekarang
-                </button>
-            </div>
-        </div>
-    );
 }
 
 function StatCard({ title, value }) {
