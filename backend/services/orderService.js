@@ -2,18 +2,18 @@ const db = require('../data');
 
 const getOrders = (role, username) => {
   if (role === 'ADMIN') {
-    return db.orders.slice().reverse(); // reverse logikanya dipindah ke sini
+    return [...db.orders].reverse();
   } else {
-    return db.orders.filter(o => o.customer_name === username).slice().reverse();
+    return db.orders.filter(o => o.customer_name === username).reverse();
   }
 };
 
 const createOrder = (productId, quantity, customerName) => {
   const product = db.products.find(p => p.id === parseInt(productId));
   
-  if (!product) throw new Error("Produk tidak ditemukan"); // Validasi di service
+  if (!product) throw new Error("Produk tidak ditemukan");
 
-  const totalPrice = product.price * parseInt(quantity);
+  const total_price = product.price * parseInt(quantity);
   const newOrder = {
     id: db.counters.orderId++,
     product_id: product.id,
@@ -22,7 +22,7 @@ const createOrder = (productId, quantity, customerName) => {
     customer_name: customerName,
     quantity: parseInt(quantity),
     price_per_item: product.price,
-    total_price: totalPrice,
+    total_price,
     payment_status: 'UNPAID',
     invoice_no: `INV/${new Date().getFullYear()}/${db.counters.orderId}`,
     created_at: new Date()
