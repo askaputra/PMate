@@ -2,10 +2,20 @@ const authService = require('../services/authService');
 
 const register = async (req, res) => {
   try {
-    const { username, password, role } = req.body;
-    const newUser = await authService.register(username, password, role);
+    console.log("REGISTER REQ BODY:", req.body);
+    const { username, password, role, full_name, phone_number, address } = req.body;
+    const newUser = await authService.register(username, password, role, { full_name, phone_number, address });
     console.log(`User baru terdaftar: ${newUser.username} (${newUser.role})`);
-    res.json({ message: "Registrasi berhasil, silakan login.", user: { username: newUser.username, role: newUser.role } });
+    res.json({
+      message: "Registrasi berhasil, silakan login.",
+      user: {
+        username: newUser.username,
+        role: newUser.role,
+        full_name: newUser.full_name,
+        phone_number: newUser.phone_number,
+        address: newUser.address
+      }
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -23,6 +33,7 @@ const login = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    console.log("UPDATE PROFILE REQ BODY:", req.body);
     const { full_name, phone_number, address } = req.body;
     const updatedUser = await authService.updateProfile(req.params.id, { full_name, phone_number, address });
     res.json({

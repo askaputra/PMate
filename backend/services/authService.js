@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-const register = async (username, password, role) => {
+const register = async (username, password, role, personalData = {}) => {
   if (!username || !password) {
     throw new Error("Username dan Password wajib diisi!");
   }
@@ -13,10 +13,15 @@ const register = async (username, password, role) => {
   const newUser = new User({
     username,
     password,
-    role: role ? role.toUpperCase() : undefined
+    role: role ? role.toUpperCase() : undefined,
+    full_name: personalData.full_name,
+    phone_number: personalData.phone_number,
+    address: personalData.address
   });
+  console.log("NEW USER OBJECT BEFORE SAVE:", newUser);
 
   await newUser.save();
+  console.log("NEW USER OBJECT AFTER SAVE:", newUser);
   return newUser;
 };
 
@@ -34,11 +39,13 @@ const updateProfile = async (id, profileData) => {
     throw new Error("User tidak ditemukan!");
   }
 
-  if (profileData.full_name) user.full_name = profileData.full_name;
-  if (profileData.phone_number) user.phone_number = profileData.phone_number;
-  if (profileData.address) user.address = profileData.address;
+  if (profileData.full_name !== undefined) user.full_name = profileData.full_name;
+  if (profileData.phone_number !== undefined) user.phone_number = profileData.phone_number;
+  if (profileData.address !== undefined) user.address = profileData.address;
 
+  console.log("USER OBJECT BEFORE SAVE (Update):", user);
   await user.save();
+  console.log("USER OBJECT AFTER SAVE (Update):", user);
   return user;
 };
 

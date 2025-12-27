@@ -14,6 +14,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['ADMIN', 'BUYER'],
         default: 'BUYER'
+    },
+    full_name: {
+        type: String
+    },
+    phone_number: {
+        type: String
+    },
+    address: {
+        type: String
     }
 });
 
