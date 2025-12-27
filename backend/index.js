@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db'); // 1. Import file config
-const upload = require('./config/uploadConfig'); // Import Multer Config
+const connectDB = require('./config/db');
+const upload = require('./config/uploadConfig');
 const path = require('path');
 
 const app = express();

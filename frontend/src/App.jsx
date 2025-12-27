@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Load Inter font
 const fontLink = document.createElement('link');
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
 fontLink.rel = 'stylesheet';
@@ -249,7 +248,6 @@ function AdminDashboard({ user }) {
       });
     } else {
       formData.append('image_url', newProduct.image_url);
-      // Send existingImages as JSON if reordered but no new files
       if (editingId && existingImages.length > 0) {
         formData.append('existing_images', JSON.stringify(existingImages));
       }
@@ -545,7 +543,6 @@ function BuyerDashboard({ user }) {
         </div>
       )}
 
-      {/* TYPE 1: MODAL ORDER BARU (Pilih Qty) */}
       {selectedProduct && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '400px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
@@ -564,7 +561,6 @@ function BuyerDashboard({ user }) {
         </div>
       )}
 
-      {/* TYPE 2: MODAL CHECKOUT (Pembayaran Invoice) */}
       {selectedOrder && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '400px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>

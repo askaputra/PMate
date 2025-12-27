@@ -27,7 +27,7 @@ const createOrder = async (productId, quantity, customerName, paymentMethod, shi
   const newOrder = new Order({
     product_id: product.id,
     product_name: product.name,
-    images: product.images, // Simpan semua gambar saat order
+    images: product.images,
     product_eta: product.eta,
     customer_name: customerName,
     quantity: parseInt(quantity),

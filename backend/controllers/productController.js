@@ -14,13 +14,11 @@ const createProduct = async (req, res) => {
     const { name, price, eta, description } = req.body;
     let images = [];
 
-    // Jika ada file yang diupload (multiple)
     if (req.files && req.files.length > 0) {
       const protocol = req.protocol;
       const host = req.get('host');
       images = req.files.map(file => `${protocol}://${host}/uploads/${file.filename}`);
     } else if (req.body.image_url) {
-      // Fallback for single URL if needed (during transition or manual input)
       images = [req.body.image_url];
     }
 
@@ -50,7 +48,6 @@ const updateProduct = async (req, res) => {
       const host = req.get('host');
       images = req.files.map(file => `${protocol}://${host}/uploads/${file.filename}`);
     } else if (existing_images) {
-      // Reordered current images (sent as JSON string from frontend)
       try {
         images = JSON.parse(existing_images);
       } catch (e) {
