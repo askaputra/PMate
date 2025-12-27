@@ -1,31 +1,75 @@
 const productService = require('../services/productService');
 
-const getAllProducts = (req, res) => {
+const getAllProducts = async (req, res) => {
   try {
-    const products = productService.getAllProducts();
+    const products = await productService.getAllProducts();
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const createProduct = (req, res) => {
+const createProduct = async (req, res) => {
   try {
     const { name, price, eta, description } = req.body;
-    const newProduct = productService.createProduct(name, price, eta, description);
+    let images = [];
+
+    // Jika ada file yang diupload (multiple)
+    if (req.files && req.files.length > 0) {
+      const protocol = req.protocol;
+      const host = req.get('host');
+      images = req.files.map(file => `${protocol}://${host}/uploads/${file.filename}`);
+    } else if (req.body.image_url) {
+      // Fallback for single URL if needed (during transition or manual input)
+      images = [req.body.image_url];
+    }
+
+    const newProduct = await productService.createProduct(name, price, eta, description, images);
     res.json(newProduct);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-const deleteProduct = (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
-    const result = productService.deleteProduct(req.params.id);
+    const result = await productService.deleteProduct(req.params.id);
     res.json(result);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 };
 
-module.exports = { getAllProducts, createProduct, deleteProduct };
+const updateProduct = async (req, res) => {
+  try {
+    const { name, price, eta, description, existing_images } = req.body;
+    let images;
+
+    if (req.files && req.files.length > 0) {
+      const protocol = req.protocol;
+      const host = req.get('host');
+      images = req.files.map(file => `${protocol}://${host}/uploads/${file.filename}`);
+    } else if (existing_images) {
+      // Reordered current images (sent as JSON string from frontend)
+      try {
+        images = JSON.parse(existing_images);
+      } catch (e) {
+        images = existing_images;
+      }
+    }
+
+    const updated = await productService.updateProduct(req.params.id, {
+      name,
+      price: parseInt(price),
+      eta,
+      description,
+      ...(images && { images })
+    });
+
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = { getAllProducts, createProduct, deleteProduct, updateProduct };

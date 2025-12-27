@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Tambahkan Service Database
   mongo:
     image: mongo:latest
     container_name: pmate-mongo
@@ -15,8 +14,9 @@ services:
     container_name: pmate-backend
     ports:
       - "3000:3000"
+    volumes:
+      - ./backend/uploads:/app/uploads
     environment:
-      # Backend akan connect ke hostname 'mongo' (sesuai nama service di atas)
       - MONGO_URI=mongodb://mongo:27017/pmate_db 
     depends_on:
       - mongo
@@ -25,8 +25,8 @@ services:
     build: ./frontend
     container_name: pmate-frontend
     ports:
-      - "80:80" # Nginx
-      - "5173:5173" # Vite Dev (opsional jika development)
+      - "80:80" 
+      - "5173:5173" 
     depends_on:
       - backend
 
