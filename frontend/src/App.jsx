@@ -411,8 +411,8 @@ function AdminDashboard({ user }) {
                       </div>
                     </td>
                     <td style={{ padding: '15px 20px' }}>
-                      <div style={{ fontSize: '12px', color: '#6b7280', fontStyle: o.shipping_option ? 'normal' : 'italic' }}>
-                        {o.shipping_option || 'Belum dipilih'}
+                      <div style={{ fontSize: '12px', color: '#6b7280', fontStyle: (o.shipping_option === '-' || !o.shipping_option) ? 'italic' : 'normal' }}>
+                        {(o.shipping_option === '-' || !o.shipping_option) ? 'Belum dipilih' : o.shipping_option}
                       </div>
                     </td>
                     <td style={{ padding: '15px 20px' }}><span style={{ color: o.payment_status === 'PAID' ? '#059669' : '#d97706', fontWeight: '800', fontSize: '11px', textTransform: 'uppercase' }}>{o.payment_status}</span></td>
@@ -481,10 +481,15 @@ function BuyerDashboard({ user }) {
   const confirmOrder = () => {
     if (!selectedProduct) return;
 
+    const shipping = document.getElementById('new-order-shipping').value;
+    const payment = document.getElementById('new-order-payment').value;
+
     api.post('/orders', {
       product_id: selectedProduct.id,
       quantity: orderQty,
-      customer_name: user.username
+      customer_name: user.username,
+      shipping_option: shipping,
+      payment_method: payment
     })
       .then(() => {
         alert("Pesanan dibuat! Silakan bayar di menu Invoice.");
@@ -564,10 +569,26 @@ function BuyerDashboard({ user }) {
               <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Jumlah:</label>
               <input type="number" min="1" value={orderQty} onChange={(e) => setOrderQty(Math.max(1, parseInt(e.target.value) || 1))} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }} />
             </div>
+            <div style={{ margin: '15px 0' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '13px' }}>Pengiriman:</label>
+              <select id="new-order-shipping" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}>
+                <option value="JNE Regular">JNE Regular (Rp 10.000)</option>
+                <option value="JNT Express">JNT Express (Rp 12.000)</option>
+                <option value="SiCepat REG">SiCepat REG (Rp 11.000)</option>
+              </select>
+            </div>
+            <div style={{ margin: '15px 0' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '13px' }}>Metode Pembayaran:</label>
+              <select id="new-order-payment" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}>
+                <option value="BCA Virtual Account">BCA Virtual Account</option>
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+              </select>
+            </div>
             <div style={{ textAlign: 'right', marginBottom: '20px' }}>Total: <strong>Rp {(selectedProduct.price * orderQty).toLocaleString()}</strong></div>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
               <button onClick={() => setSelectedProduct(null)} style={{ padding: '10px 20px', background: '#ccc', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Batal</button>
-              <button onClick={confirmOrder} style={{ padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Simpan Pesanan</button>
+              <button onClick={confirmOrder} style={{ padding: '10px 20px', background: '#111827', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Simpan Pesanan</button>
             </div>
           </div>
         </div>

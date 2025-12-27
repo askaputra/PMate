@@ -13,8 +13,8 @@ const getOrders = async (req, res) => {
 
 const createOrder = async (req, res) => {
   try {
-    const { product_id, quantity, customer_name } = req.body;
-    const newOrder = await orderService.createOrder(product_id, quantity, customer_name);
+    const { product_id, quantity, customer_name, payment_method, shipping_option } = req.body;
+    const newOrder = await orderService.createOrder(product_id, quantity, customer_name, payment_method, shipping_option);
     res.json(newOrder);
   } catch (error) {
     if (error.message === "Produk tidak ditemukan") {
