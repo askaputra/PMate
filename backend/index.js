@@ -1,7 +1,12 @@
 // backend/index.js
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db'); // 1. Import file config
+
 const app = express();
+
+// 2. PENTING: Eksekusi koneksi database di sini!
+connectDB(); 
 
 // Import Controllers
 const authController = require('./controllers/authController');
@@ -12,7 +17,7 @@ const statsController = require('./controllers/statsController');
 app.use(cors());
 app.use(express.json());
 
-// Middleware Admin
+// Middleware Admin (Bisa dipisah ke folder middleware jika mau lebih rapi)
 const checkAdmin = (req, res, next) => {
   const role = req.headers['x-user-role'];
   if (role !== 'ADMIN') return res.status(403).json({ error: "Akses ditolak! Khusus Admin." });
