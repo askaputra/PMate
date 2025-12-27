@@ -386,6 +386,8 @@ function AdminDashboard({ user }) {
                 <tr style={{ background: '#f9fafb', textAlign: 'left', borderBottom: '1px solid #f3f4f6' }}>
                   <th style={{ padding: '15px 20px', color: '#6b7280', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Buyer</th>
                   <th style={{ padding: '15px 20px', color: '#6b7280', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Product</th>
+                  <th style={{ padding: '15px 20px', color: '#6b7280', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Method</th>
+                  <th style={{ padding: '15px 20px', color: '#6b7280', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Shipping</th>
                   <th style={{ padding: '15px 20px', color: '#6b7280', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Status</th>
                   <th style={{ padding: '15px 20px', color: '#6b7280', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Action</th>
                 </tr>
@@ -401,6 +403,16 @@ function AdminDashboard({ user }) {
                           <div style={{ fontWeight: '600' }}>{o.product_name}</div>
                           <div style={{ fontSize: '12px', color: '#6b7280' }}>x{o.quantity}</div>
                         </div>
+                      </div>
+                    </td>
+                    <td style={{ padding: '15px 20px' }}>
+                      <div style={{ fontSize: '12px', fontWeight: '500', color: '#374151', background: '#f3f4f6', padding: '4px 8px', borderRadius: '4px', display: 'inline-block' }}>
+                        {o.payment_method || '-'}
+                      </div>
+                    </td>
+                    <td style={{ padding: '15px 20px' }}>
+                      <div style={{ fontSize: '12px', color: '#6b7280', fontStyle: o.shipping_option ? 'normal' : 'italic' }}>
+                        {o.shipping_option || 'Belum dipilih'}
                       </div>
                     </td>
                     <td style={{ padding: '15px 20px' }}><span style={{ color: o.payment_status === 'PAID' ? '#059669' : '#d97706', fontWeight: '800', fontSize: '11px', textTransform: 'uppercase' }}>{o.payment_status}</span></td>
