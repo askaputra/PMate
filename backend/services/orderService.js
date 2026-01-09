@@ -33,7 +33,7 @@ const createOrder = async (productId, quantity, customerName, paymentMethod, shi
     quantity: parseInt(quantity),
     price_per_item: product.price,
     total_price,
-    payment_status: paymentMethod ? 'PAID' : 'UNPAID',
+    payment_status: 'UNPAID',
     payment_method: paymentMethod || '-',
     shipping_option: shippingOption || '-',
     invoice_no
@@ -46,7 +46,7 @@ const createOrder = async (productId, quantity, customerName, paymentMethod, shi
     order_id: newOrder._id,
     product_name: product.name,
     amount: total_price,
-    status: paymentMethod ? 'PAID' : 'UNPAID'
+    status: 'UNPAID'
   });
   await newInvoice.save();
 
